@@ -51,6 +51,7 @@ public class TW_Regular : MonoBehaviour {
 
     public GameObject Player;
     public GameObject InteractableParent;
+    public bool item;
 
     //public DetermineTextObject determineTextObject;
 
@@ -90,10 +91,30 @@ public class TW_Regular : MonoBehaviour {
         }
 
         //close the text
-        if (go && Input.GetKey(KeyCode.Space)){
-            SkipTypewriter();
-            go = false;
+        if (go){
+
+            //if it's not an item
+            if (item == false && Input.GetKey(KeyCode.Space))
+            {
+                SkipTypewriter();
+                go = false;
+            }
+
+            //if it's an item, choose what to do with it
+            if (item == true && Input.GetKey(KeyCode.Y)){
+                Destroy(this.gameObject);
+                SkipTypewriter();
+                go = false;
+                //PlayPickupAnimation();
+                //AddToInventory();
+            }
+            if (item == true && Input.GetKey(KeyCode.N))
+            {
+                SkipTypewriter();
+                go = false;
+            }
         }
+        
     }
   
     public void StartTypewriter()

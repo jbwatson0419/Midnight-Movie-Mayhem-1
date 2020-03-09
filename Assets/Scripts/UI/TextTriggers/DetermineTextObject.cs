@@ -51,11 +51,14 @@ public class DetermineTextObject : MonoBehaviour
         //check if the player is facing the interactable object
         IsFacingObject();
 
-        if ((facing) && (colliding) && (Input.GetKey(KeyCode.Space)) && (Player.GetComponent<TankControls>().inputEnabled == true) && (textWaitTimer == 0))
+        if (TextObject != null)
         {
-            TextObject.GetComponent<TW_Regular>().StartTypewriter();
-            Player.GetComponent<TankControls>().inputEnabled = false;
-            displayText = true;
+            if ((facing) && (colliding) && (Input.GetKey(KeyCode.Space)) && (Player.GetComponent<TankControls>().inputEnabled == true) && (textWaitTimer == 0))
+            {
+                TextObject.GetComponent<TW_Regular>().StartTypewriter();
+                Player.GetComponent<TankControls>().inputEnabled = false;
+                displayText = true;
+            }
         }
     }
 
@@ -67,14 +70,15 @@ public class DetermineTextObject : MonoBehaviour
 
         if (Vector3.Dot(forward, toOther) < 0.7f)
         {
-            Debug.Log("Not facing the object");
+            //Debug.Log("Not facing the object");
             facing = false;
             return false;
         }
-
-        
-        Debug.Log("Facing the object");
-        facing = true;
-        return true; 
+        else
+        {
+            //Debug.Log("Facing the object");
+            facing = true;
+            return true;
+        }
     }
 }
