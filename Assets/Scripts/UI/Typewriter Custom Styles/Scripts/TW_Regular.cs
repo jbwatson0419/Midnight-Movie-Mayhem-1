@@ -13,6 +13,7 @@ public class TW_Regular_Editor : Editor
 {
     private static string[] PointerSymbols = { "None", "<", "_", "|", ">" };
     private TW_Regular TW_RegularScript;
+  
 
     private void Awake()
     {
@@ -45,13 +46,16 @@ public class TW_Regular : MonoBehaviour {
     public int сharIndex = 0;
     private bool start = false;
     public static bool displayText;
-    
+    public GameObject callingObject = null;
+
+
     private bool go = false;
     private bool display_text = false;
 
     public GameObject Player;
     public GameObject InteractableParent;
     public bool item;
+    public bool action;
 
     //public DetermineTextObject determineTextObject;
 
@@ -94,21 +98,36 @@ public class TW_Regular : MonoBehaviour {
         if (go){
 
             //if it's not an item
-            if (item == false && Input.GetKey(KeyCode.Space))
+            if (item == false && action == false && Input.GetKey(KeyCode.Space))
             {
                 SkipTypewriter();
                 go = false;
+                if (callingObject.GetComponent<ChangeRooms>().unlocked == true)
+                {
+                    callingObject.GetComponent<ChangeRooms>().unlocked = false;
+                }
             }
 
             //if it's an item, choose what to do with it
-            if (item == true && Input.GetKey(KeyCode.Y)){
-                Destroy(this.gameObject);
-                SkipTypewriter();
-                go = false;
-                //PlayPickupAnimation();
-                //AddToInventory();
+            if (Input.GetKey(KeyCode.Y)){
+                if (item == true)
+                {
+                    Destroy(this.gameObject);
+                    SkipTypewriter();
+                    go = false;
+                    //PlayPickupAnimation();
+                    //AddToInventory();
+                }
+                if(action == true)
+                {
+                    SkipTypewriter();
+                    go = false;
+                    string level = callingObject.GetComponent<ChangeRooms>().level;
+                    callingObject.GetComponent<ChangeRooms>().ChangeScene(level);
+                    //PerformAction();
+                }
             }
-            if (item == true && Input.GetKey(KeyCode.N))
+            if ((item || action) && Input.GetKey(KeyCode.N))
             {
                 SkipTypewriter();
                 go = false;
@@ -133,8 +152,19 @@ public class TW_Regular : MonoBehaviour {
         gameObject.GetComponent<TextMeshProUGUI>().text = "";
         display_text = false;
         start = false;
-        DetermineTextObject.textWaitTimer = 1f;
+        DetermineTextObject.textWaitTimer = 1.5f;
         DetermineTextObject.go = true;
+
+        if (callingObject != null)
+        {
+            if (callingObject.GetComponent<ChangeRooms>() != null)
+            {
+                if (callingObject.GetComponent<ChangeRooms>().unlocked == true) //disable the unlock variable, so that the door is permanently unlocked
+                {
+                    callingObject.GetComponent<ChangeRooms>().unlocked = false;
+                }
+            }
+        }
     }
 
     private void NewLineCheck(string S)
